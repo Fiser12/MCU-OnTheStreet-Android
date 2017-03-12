@@ -24,12 +24,13 @@ package fiser;
 import android.content.Context;
 
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Sitio {
+public class Sitio implements Serializable {
 
   public static final String TAG = Sitio.class.getSimpleName();
 
@@ -37,27 +38,26 @@ public class Sitio {
   public String description;
   public String imageUrl;
   public String instructionUrl;
-  public String label;
+  public String coordenadas;
+  public ArrayList<String> contactos = new ArrayList<>();
 
   public static ArrayList<Sitio> getRecipesFromFile(String filename, Context context){
     final ArrayList<Sitio> sitioList = new ArrayList<>();
 
     try {
-      // Load data
-      String jsonString = loadJsonFromAsset("sitios.json", context);
+      String jsonString = loadJsonFromAsset(filename, context);
       JSONObject json = new JSONObject(jsonString);
       JSONArray recipes = json.getJSONArray("recipes");
-
-      // Get Sitio objects from data
       for(int i = 0; i < recipes.length(); i++){
         Sitio sitio = new Sitio();
-
         sitio.title = recipes.getJSONObject(i).getString("title");
         sitio.description = recipes.getJSONObject(i).getString("description");
         sitio.imageUrl = recipes.getJSONObject(i).getString("image");
         sitio.instructionUrl = recipes.getJSONObject(i).getString("url");
-        sitio.label = recipes.getJSONObject(i).getString("dietLabel");
-
+        sitio.coordenadas = recipes.getJSONObject(i).getString("coordenadas");
+        JSONArray st = recipes.getJSONObject(i).getJSONArray("contactos");
+        for(int j=0;j<st.length();j++)
+          sitio.contactos.add(st.getString(j));
         sitioList.add(sitio);
       }
     } catch (JSONException e) {
@@ -69,7 +69,6 @@ public class Sitio {
 
   private static String loadJsonFromAsset(String filename, Context context) {
     String json = null;
-
     try {
       InputStream is = context.getAssets().open(filename);
       int size = is.available();

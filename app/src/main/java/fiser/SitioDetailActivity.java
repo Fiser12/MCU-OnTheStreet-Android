@@ -31,23 +31,12 @@ public class SitioDetailActivity extends AppCompatActivity {
 
   public static final String TAG = SitioDetailActivity.class.getSimpleName();
     
-  private WebView mWebView;
-
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_sitio_detail);
-
-    // Get recipe data passed from previous activity
-    String title = this.getIntent().getExtras().getString("title");
-    String url = this.getIntent().getExtras().getString("url");
-
-    // Set title on action bar of this activity
-    setTitle(title);
-
-    // Create WebView and load web page
-    mWebView = (WebView) findViewById(R.id.detail_web_view);
-    mWebView.loadUrl(url);
+    Sitio sitio = (Sitio)this.getIntent().getExtras().getSerializable("sitio");
+    setTitle(sitio.title);
   }
 
 }
