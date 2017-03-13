@@ -41,30 +41,11 @@ public class Sitio implements Serializable {
   public String coordenadas;
   public ArrayList<String> contactos = new ArrayList<>();
 
-  public static ArrayList<Sitio> getRecipesFromFile(String filename, Context context){
-    final ArrayList<Sitio> sitioList = new ArrayList<>();
-
-    try {
-      String jsonString = loadJsonFromAsset(filename, context);
-      JSONObject json = new JSONObject(jsonString);
-      JSONArray recipes = json.getJSONArray("recipes");
-      for(int i = 0; i < recipes.length(); i++){
-        Sitio sitio = new Sitio();
-        sitio.title = recipes.getJSONObject(i).getString("title");
-        sitio.description = recipes.getJSONObject(i).getString("description");
-        sitio.imageUrl = recipes.getJSONObject(i).getString("image");
-        sitio.instructionUrl = recipes.getJSONObject(i).getString("url");
-        sitio.coordenadas = recipes.getJSONObject(i).getString("coordenadas");
-        JSONArray st = recipes.getJSONObject(i).getJSONArray("contactos");
-        for(int j=0;j<st.length();j++)
-          sitio.contactos.add(st.getString(j));
-        sitioList.add(sitio);
-      }
-    } catch (JSONException e) {
-      e.printStackTrace();
-    }
-
-    return sitioList;
+  public static ArrayList<Sitio> getSitio(Context context){
+    return (new SitiosManager(context)).getSitios();
+  }
+  public static void putSitio(Context context, Sitio sitio){
+    (new SitiosManager(context)).putSitio(sitio);
   }
 
   private static String loadJsonFromAsset(String filename, Context context) {

@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
     final Context context = this;
-    final ArrayList<Sitio> sitioList = Sitio.getRecipesFromFile("sitios.json", this);
+    final ArrayList<Sitio> sitioList = Sitio.getSitio(this);
     SitioAdapter adapter = new SitioAdapter(this, sitioList);
     mListView = (ListView) findViewById(R.id.sitio_list_view);
     mListView.setAdapter(adapter);
