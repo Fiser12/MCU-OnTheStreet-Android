@@ -23,11 +23,16 @@ package fiser;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
-
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Random;
+
 import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
 import android.content.Intent;
@@ -39,14 +44,12 @@ public class MainActivity extends AppCompatActivity {
 
   public static final String TAG = MainActivity.class.getSimpleName();
   private ListView mListView;
-  private android.view.ActionMode mActionMode;
-
+  private ArrayList<Sitio> sitioList;
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
-    final Context context = this;
-    final ArrayList<Sitio> sitioList = Sitio.getSitio(this);
+    sitioList = Sitio.getSitio(this);
     SitioAdapter adapter = new SitioAdapter(this, sitioList);
     mListView = (ListView) findViewById(R.id.sitio_list_view);
     mListView.setAdapter(adapter);
@@ -54,10 +57,38 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
        Serializable selectedSitio = sitioList.get(position);
-       Intent detailIntent = new Intent(context, SitioDetailActivity.class);
+       Intent detailIntent = new Intent(MainActivity.this, SitioDetailActivity.class);
        detailIntent.putExtra("sitio", selectedSitio);
        startActivity(detailIntent);
       }
     });
+  }
+  @Override
+  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    sitioList.clear();
+    for(Sitio sitio: Sitio.getSitio(this))
+      sitioList.add(sitio);
+  }
+
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+    MenuInflater inflater = getMenuInflater();
+    inflater.inflate(R.menu.menu, menu);
+    return true;
+  }
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    switch (item.getItemId()) {
+      case R.id.crear:
+        Intent detailIntent = new Intent(this, SitioDetailActivity.class);
+        Sitio sitio = new Sitio();
+        sitio.id = new Random().nextInt(Integer.MAX_VALUE);
+        detailIntent.putExtra("sitio", sitio);
+        startActivity(detailIntent);
+        return true;
+      default:
+        return super.onOptionsItemSelected(item);
+    }
   }
 }

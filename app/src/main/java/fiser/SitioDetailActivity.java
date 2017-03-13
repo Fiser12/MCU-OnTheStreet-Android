@@ -34,7 +34,6 @@ import com.fiser.sites.R;
 import com.squareup.picasso.Picasso;
 
 public class SitioDetailActivity extends AppCompatActivity {
-
   public static final String TAG = SitioDetailActivity.class.getSimpleName();
   private EditText description;
   private EditText titulo;
@@ -43,29 +42,27 @@ public class SitioDetailActivity extends AppCompatActivity {
   private Sitio sitio;
   @Override
   protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    ActionBar actionBar = getSupportActionBar();
-    actionBar.setDisplayHomeAsUpEnabled(true);
-    setContentView(R.layout.activity_sitio_detail);
-    sitio = (Sitio)this.getIntent().getExtras().getSerializable("sitio");
-    setTitle(sitio.title);
-    description = (EditText) findViewById(R.id.editDescripcion);
-    description.setText(sitio.description);
-    titulo = (EditText) findViewById(R.id.editTitulo);
-    titulo.setText(sitio.title);
-    imagen = (ImageView) findViewById(R.id.imageView);
-    Picasso.with(this).load(sitio.imageUrl).placeholder(R.mipmap.ic_launcher).into(imagen);
-    boton = (Button) findViewById(R.id.buttonGuardar);
-    boton.setOnClickListener(new View.OnClickListener()
-    {
-      public void onClick(View v)
-      {
-        sitio.description = description.getText().toString();
-        sitio.title = titulo.getText().toString();
-        new SitiosManager(SitioDetailActivity.this).putSitio(sitio);
-      }
-    });
-
+      super.onCreate(savedInstanceState);
+      ActionBar actionBar = getSupportActionBar();
+      actionBar.setDisplayHomeAsUpEnabled(true);
+      setContentView(R.layout.activity_sitio_detail);
+      sitio = (Sitio)this.getIntent().getExtras().getSerializable("sitio");
+      setTitle(sitio.title);
+      description = (EditText) findViewById(R.id.editDescripcion);
+      description.setText(sitio.description);
+      titulo = (EditText) findViewById(R.id.editTitulo);
+      titulo.setText(sitio.title);
+      imagen = (ImageView) findViewById(R.id.imageView);
+      Picasso.with(this).load(sitio.imageUrl).placeholder(R.mipmap.ic_launcher).into(imagen);
+      boton = (Button) findViewById(R.id.buttonGuardar);
+      boton.setOnClickListener(new View.OnClickListener() {
+          public void onClick(View v) {
+              sitio.description = description.getText().toString();
+              sitio.title = titulo.getText().toString();
+              new SitiosManager(SitioDetailActivity.this).putSitio(sitio);
+              finish();
+          }
+      });
   }
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
