@@ -21,22 +21,60 @@
  */
 package fiser;
 
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.webkit.WebView;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 
-import com.raywenderlich.alltherecipes.R;
+import com.fiser.sites.R;
+import com.squareup.picasso.Picasso;
 
 public class SitioDetailActivity extends AppCompatActivity {
 
   public static final String TAG = SitioDetailActivity.class.getSimpleName();
-    
+  private EditText description;
+  private EditText titulo;
+  private ImageView imagen;
+  private Button boton;
+  private Sitio sitio;
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    ActionBar actionBar = getSupportActionBar();
+    actionBar.setDisplayHomeAsUpEnabled(true);
     setContentView(R.layout.activity_sitio_detail);
-    Sitio sitio = (Sitio)this.getIntent().getExtras().getSerializable("sitio");
+    sitio = (Sitio)this.getIntent().getExtras().getSerializable("sitio");
     setTitle(sitio.title);
+    description = (EditText) findViewById(R.id.editDescripcion);
+    description.setText(sitio.description);
+    titulo = (EditText) findViewById(R.id.editTitulo);
+    titulo.setText(sitio.title);
+    imagen = (ImageView) findViewById(R.id.imageView);
+    Picasso.with(this).load(sitio.imageUrl).placeholder(R.mipmap.ic_launcher).into(imagen);
+    boton = (Button) findViewById(R.id.buttonGuardar);
+    boton.setOnClickListener(new View.OnClickListener()
+    {
+      public void onClick(View v)
+      {
+        sitio.description = description.getText().toString();
+        sitio.title = titulo.getText().toString();
+        new SitiosManager(SitioDetailActivity.this).putSitio(sitio);
+      }
+    });
+
+  }
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    switch (item.getItemId()) {
+      case android.R.id.home:
+        finish();
+        return true;
+    }
+    return super.onOptionsItemSelected(item);
   }
 
 }

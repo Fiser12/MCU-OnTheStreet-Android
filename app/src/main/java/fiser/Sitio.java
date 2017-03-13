@@ -33,7 +33,7 @@ import org.json.JSONObject;
 public class Sitio implements Serializable {
 
   public static final String TAG = Sitio.class.getSimpleName();
-
+  public int id;
   public String title;
   public String description;
   public String imageUrl;

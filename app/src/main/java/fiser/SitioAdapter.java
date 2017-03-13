@@ -31,7 +31,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.raywenderlich.alltherecipes.R;
+import com.fiser.sites.R;
 import com.squareup.picasso.Picasso;
 import android.graphics.Typeface;
 

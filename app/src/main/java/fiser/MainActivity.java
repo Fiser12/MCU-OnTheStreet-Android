@@ -33,12 +33,13 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.content.Intent;
 import android.content.Context;
 
-import com.raywenderlich.alltherecipes.R;
+import com.fiser.sites.R;
 
 public class MainActivity extends AppCompatActivity {
 
   public static final String TAG = MainActivity.class.getSimpleName();
   private ListView mListView;
+  private android.view.ActionMode mActionMode;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
