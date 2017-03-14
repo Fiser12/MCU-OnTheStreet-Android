@@ -26,6 +26,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Address;
@@ -33,6 +34,10 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
+import android.provider.ContactsContract;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -69,6 +74,8 @@ public class SitioDetailActivity extends AppCompatActivity {
     private boolean accesoDenegadoGPS = false;
     Location location = null;
     private Bitmap bitmap;
+    private FloatingActionButton fab;
+    private static final int REQUEST_CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +97,16 @@ public class SitioDetailActivity extends AppCompatActivity {
         imagen.setImageBitmap(getImageFromInternalStorage("img"+sitio.id+".png"));
         botonGuardar = (Button) findViewById(R.id.buttonGuardar);
         botonBorrar = (Button) findViewById(R.id.buttonBorrar);
-
+        fab = (FloatingActionButton) findViewById(R.id.add);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Uri uri = Uri.parse("content://contacts");
+                Intent intent = new Intent(Intent.ACTION_PICK, uri);
+                intent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE);
+                startActivityForResult(intent, REQUEST_CODE);
+            }
+        });
         locationListener = new MyLocationListener();
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             accesoDenegadoGPS = true;
@@ -138,6 +154,20 @@ public class SitioDetailActivity extends AppCompatActivity {
                 imagen.setImageBitmap(bitmap);
                 changeImage = true;
                 break;
+            case REQUEST_CODE:
+                if(resultCode== RESULT_OK)
+                {
+                    Uri uri = data.getData();
+                    String[] projection = { ContactsContract.CommonDataKinds.Phone.NUMBER, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME };
+                    Cursor cursor = getContentResolver().query(uri, projection,
+                            null, null, null);
+                    cursor.moveToFirst();
+                    int numberColumnIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+                    String number = cursor.getString(numberColumnIndex);
+                    int nameColumnIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
+                    String name = cursor.getString(nameColumnIndex);
+                    sitio.contactos.add(name+":"+number);
+                }
             default:
                 super.onActivityResult(requestCode, resultCode, data);
                 break;
