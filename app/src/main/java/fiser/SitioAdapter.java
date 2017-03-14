@@ -37,7 +37,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.fiser.sites.R;
-import com.squareup.picasso.Picasso;
 import android.graphics.Typeface;
 
 public class SitioAdapter extends BaseAdapter {
