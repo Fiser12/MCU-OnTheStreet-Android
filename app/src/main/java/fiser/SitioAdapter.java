@@ -82,6 +82,7 @@ public class SitioAdapter extends BaseAdapter {
       holder = new ViewHolder();
       holder.thumbnailImageView = (ImageView) convertView.findViewById(R.id.sitio_list_thumbnail);
       holder.titleTextView = (TextView) convertView.findViewById(R.id.sitio_list_title);
+      holder.ubicacionTextView = (TextView) convertView.findViewById((R.id.textUbicacion));
       convertView.setTag(holder);
     }
     else {
@@ -89,8 +90,11 @@ public class SitioAdapter extends BaseAdapter {
     }
     TextView titleTextView = holder.titleTextView;
     ImageView thumbnailImageView = holder.thumbnailImageView;
+    TextView ubicacionTextView = holder.ubicacionTextView;
+
     Sitio sitio = (Sitio) getItem(position);
     titleTextView.setText(sitio.title);
+    ubicacionTextView.setText(sitio.coordenadas);
     Picasso.with(mContext).load(sitio.imageUrl).placeholder(R.mipmap.ic_launcher).into(thumbnailImageView);
     Typeface titleTypeFace = Typeface.createFromAsset(mContext.getAssets(),
         "fonts/JosefinSans-Bold.ttf");
@@ -100,6 +104,7 @@ public class SitioAdapter extends BaseAdapter {
 
   private static class ViewHolder {
     public TextView titleTextView;
+    public TextView ubicacionTextView;
     public ImageView thumbnailImageView;
   }
 }

@@ -34,4 +34,13 @@
         />
 
   </RelativeLayout>
+
+  <TextView
+      android:id="@+id/textUbicacion"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="TextView"
+      android:layout_marginStart="11dp"
+      android:layout_alignBottom="@+id/sitio_list_thumbnail"
+      android:layout_toEndOf="@+id/sitio_list_thumbnail" />
 </RelativeLayout>

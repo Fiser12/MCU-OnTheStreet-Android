@@ -21,6 +21,7 @@
  */
 package fiser;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -45,12 +46,13 @@ public class MainActivity extends AppCompatActivity {
   public static final String TAG = MainActivity.class.getSimpleName();
   private ListView mListView;
   private ArrayList<Sitio> sitioList;
+  private SitioAdapter adapter;
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
     sitioList = Sitio.getSitio(this);
-    SitioAdapter adapter = new SitioAdapter(this, sitioList);
+    adapter = new SitioAdapter(this, sitioList);
     mListView = (ListView) findViewById(R.id.sitio_list_view);
     mListView.setAdapter(adapter);
     mListView.setOnItemClickListener(new OnItemClickListener() {
@@ -59,16 +61,22 @@ public class MainActivity extends AppCompatActivity {
        Serializable selectedSitio = sitioList.get(position);
        Intent detailIntent = new Intent(MainActivity.this, SitioDetailActivity.class);
        detailIntent.putExtra("sitio", selectedSitio);
-       startActivity(detailIntent);
+      startActivityForResult(detailIntent, PICK_CONTACT_REQUEST);
       }
     });
   }
+  public static final int PICK_CONTACT_REQUEST = 1;
+
   @Override
   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-    super.onActivityResult(requestCode, resultCode, data);
-    sitioList.clear();
-    for(Sitio sitio: Sitio.getSitio(this))
-      sitioList.add(sitio);
+    if (requestCode == PICK_CONTACT_REQUEST) {
+      if(resultCode == Activity.RESULT_OK){
+        sitioList.clear();
+        for(Sitio sitio: Sitio.getSitio(this))
+          sitioList.add(sitio);
+        adapter.notifyDataSetChanged();
+      }
+    }
   }
 
   @Override
@@ -85,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
         Sitio sitio = new Sitio();
         sitio.id = new Random().nextInt(Integer.MAX_VALUE);
         detailIntent.putExtra("sitio", sitio);
-        startActivity(detailIntent);
+        startActivityForResult(detailIntent, PICK_CONTACT_REQUEST);
         return true;
       default:
         return super.onOptionsItemSelected(item);

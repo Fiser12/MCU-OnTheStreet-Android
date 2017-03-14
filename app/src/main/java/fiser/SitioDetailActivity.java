@@ -21,57 +21,128 @@
  */
 package fiser;
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.fiser.sites.R;
 import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
+
 public class SitioDetailActivity extends AppCompatActivity {
-  public static final String TAG = SitioDetailActivity.class.getSimpleName();
-  private EditText description;
-  private EditText titulo;
-  private ImageView imagen;
-  private Button boton;
-  private Sitio sitio;
-  @Override
-  protected void onCreate(Bundle savedInstanceState) {
-      super.onCreate(savedInstanceState);
-      ActionBar actionBar = getSupportActionBar();
-      actionBar.setDisplayHomeAsUpEnabled(true);
-      setContentView(R.layout.activity_sitio_detail);
-      sitio = (Sitio)this.getIntent().getExtras().getSerializable("sitio");
-      setTitle(sitio.title);
-      description = (EditText) findViewById(R.id.editDescripcion);
-      description.setText(sitio.description);
-      titulo = (EditText) findViewById(R.id.editTitulo);
-      titulo.setText(sitio.title);
-      imagen = (ImageView) findViewById(R.id.imageView);
-      Picasso.with(this).load(sitio.imageUrl).placeholder(R.mipmap.ic_launcher).into(imagen);
-      boton = (Button) findViewById(R.id.buttonGuardar);
-      boton.setOnClickListener(new View.OnClickListener() {
-          public void onClick(View v) {
-              sitio.description = description.getText().toString();
-              sitio.title = titulo.getText().toString();
-              new SitiosManager(SitioDetailActivity.this).putSitio(sitio);
-              finish();
-          }
-      });
-  }
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
-    switch (item.getItemId()) {
-      case android.R.id.home:
-        finish();
-        return true;
+    public static final String TAG = SitioDetailActivity.class.getSimpleName();
+    private EditText description;
+    private EditText titulo;
+    private TextView ubicacion;
+
+    private ImageView imagen;
+    private Button boton;
+    private Sitio sitio;
+    private LocationManager locationManager = null;
+    private LocationListener locationListener = null;
+    private boolean accesoDenegadoGPS = false;
+    Location location = null;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        setContentView(R.layout.activity_sitio_detail);
+        sitio = (Sitio) this.getIntent().getExtras().getSerializable("sitio");
+        setTitle(sitio.title);
+        ubicacion = (TextView) findViewById(R.id.textUbicacion);
+        ubicacion.setText(sitio.coordenadas);
+        description = (EditText) findViewById(R.id.editDescripcion);
+        description.setText(sitio.description);
+        titulo = (EditText) findViewById(R.id.editTitulo);
+        titulo.setText(sitio.title);
+        imagen = (ImageView) findViewById(R.id.imageView);
+        Picasso.with(this).load(sitio.imageUrl).placeholder(R.mipmap.ic_launcher).into(imagen);
+        boton = (Button) findViewById(R.id.buttonGuardar);
+        locationListener = new MyLocationListener();
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            accesoDenegadoGPS = true;
+        }else {
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, locationListener);
+        }
+        boton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                sitio.description = description.getText().toString();
+                sitio.title = titulo.getText().toString();
+                if(location!=null&&!accesoDenegadoGPS)
+                    sitio.coordenadas = getAddress(location.getLatitude(),location.getLongitude());
+                new SitiosManager(SitioDetailActivity.this).putSitio(sitio);
+                Intent returnIntent = new Intent();
+                returnIntent.putExtra("sitio", sitio);
+                setResult(Activity.RESULT_OK, returnIntent);
+                finish();
+            }
+        });
     }
-    return super.onOptionsItemSelected(item);
-  }
+
+    private String getAddress(double lat, double lng) {
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        try {
+            List<Address> addresses = geocoder.getFromLocation(lat, lng, 1);
+            Address obj = addresses.get(0);
+            return obj.getAddressLine(0);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Intent returnIntent = new Intent();
+                setResult(Activity.RESULT_CANCELED, returnIntent);
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private class MyLocationListener implements LocationListener {
+        @Override
+        public void onLocationChanged(Location loc) {
+            location = loc;
+            ubicacion.setText(getAddress(loc.getLatitude(), loc.getLongitude()));
+        }
+        @Override
+        public void onProviderDisabled(String provider) {
+        }
+        @Override
+        public void onProviderEnabled(String provider) {
+        }
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+        }
+    }
 
 }
