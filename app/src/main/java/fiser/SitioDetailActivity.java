@@ -45,9 +45,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.fiser.sites.R;
@@ -55,6 +58,7 @@ import com.fiser.sites.R;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Locale;
 
@@ -72,10 +76,12 @@ public class SitioDetailActivity extends AppCompatActivity {
     private LocationManager locationManager = null;
     private LocationListener locationListener = null;
     private boolean accesoDenegadoGPS = false;
-    Location location = null;
+    private Location location = null;
     private Bitmap bitmap;
     private FloatingActionButton fab;
     private static final int REQUEST_CODE = 1;
+    private ListView contactList;
+    private ArrayAdapter<String> itemsAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +103,17 @@ public class SitioDetailActivity extends AppCompatActivity {
         imagen.setImageBitmap(getImageFromInternalStorage("img"+sitio.id+".png"));
         botonGuardar = (Button) findViewById(R.id.buttonGuardar);
         botonBorrar = (Button) findViewById(R.id.buttonBorrar);
+        contactList = (ListView) findViewById(R.id.contactList);
+        itemsAdapter= new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, sitio.contactos);
+        contactList.setAdapter(itemsAdapter);
+        contactList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                sitio.contactos.remove(position);
+                itemsAdapter.notifyDataSetChanged();
+            }
+        });
+
         fab = (FloatingActionButton) findViewById(R.id.add);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -166,7 +183,8 @@ public class SitioDetailActivity extends AppCompatActivity {
                     String number = cursor.getString(numberColumnIndex);
                     int nameColumnIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
                     String name = cursor.getString(nameColumnIndex);
-                    sitio.contactos.add(name+":"+number);
+                    sitio.contactos.add(name+" "+number);
+                    itemsAdapter.notifyDataSetChanged();
                 }
             default:
                 super.onActivityResult(requestCode, resultCode, data);

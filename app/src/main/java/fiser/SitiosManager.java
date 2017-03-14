@@ -8,7 +8,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
+import java.util.regex.Pattern;
 
 public class SitiosManager extends SQLiteOpenHelper{
 
@@ -62,18 +64,22 @@ public class SitiosManager extends SQLiteOpenHelper{
         values.put(COLUMN_DESCRIPTION, sitio.description);
         values.put(COLUMN_COORDENADAS, sitio.coordenadas);
         values.put(COLUMN_IMG, sitio.imageUrl);
-        values.put(COLUMN_CONTACTSID, sitio.contactos.toString());
+        values.put(COLUMN_CONTACTSID, "");
         db.insert(TABLE_SITIOS, null, values);
     }
     public void putSitio(Sitio sitio){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
+        String contactos = "";
+        for(String temp: sitio.contactos) {
+            contactos = contactos + temp + ",";
+        }
         values.put(COLUMN_ID, sitio.id);
         values.put(COLUMN_TITLE, sitio.title);
         values.put(COLUMN_DESCRIPTION, sitio.description);
         values.put(COLUMN_COORDENADAS, sitio.coordenadas);
         values.put(COLUMN_IMG, sitio.imageUrl);
-        values.put(COLUMN_CONTACTSID, sitio.contactos.toString());
+        values.put(COLUMN_CONTACTSID, contactos);
         db.insertWithOnConflict(TABLE_SITIOS, null, values, SQLiteDatabase.CONFLICT_REPLACE);
     }
     public boolean deleteSitio(Sitio sitio){
@@ -99,6 +105,10 @@ public class SitiosManager extends SQLiteOpenHelper{
             sitio.description = cursor.getString(2);
             sitio.coordenadas = cursor.getString(3);
             sitio.imageUrl = cursor.getString(4);
+            if(!cursor.getString(5).isEmpty())
+                sitio.contactos = new ArrayList<>(Arrays.asList(cursor.getString(5).split(Pattern.quote(","))));
+            else
+                sitio.contactos = new ArrayList<>();
             as.add(sitio);
             cursor.moveToNext();
         }
