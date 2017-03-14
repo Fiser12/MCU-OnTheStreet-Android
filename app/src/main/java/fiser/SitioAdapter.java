@@ -22,12 +22,17 @@
 package fiser;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -95,11 +100,22 @@ public class SitioAdapter extends BaseAdapter {
     Sitio sitio = (Sitio) getItem(position);
     titleTextView.setText(sitio.title);
     ubicacionTextView.setText(sitio.coordenadas);
-    Picasso.with(mContext).load(sitio.imageUrl).placeholder(R.mipmap.ic_launcher).into(thumbnailImageView);
+    thumbnailImageView.setImageBitmap(getImageFromInternalStorage("img"+sitio.id+".png"));
     Typeface titleTypeFace = Typeface.createFromAsset(mContext.getAssets(),
         "fonts/JosefinSans-Bold.ttf");
     titleTextView.setTypeface(titleTypeFace);
     return convertView;
+  }
+  public Bitmap getImageFromInternalStorage(String filename) {
+    Bitmap thumbnail = null;
+    try {
+      File filePath = mContext.getFileStreamPath(filename);
+      FileInputStream fi = new FileInputStream(filePath);
+      thumbnail = BitmapFactory.decodeStream(fi);
+    } catch (Exception ex) {
+
+    }
+    return thumbnail;
   }
 
   private static class ViewHolder {

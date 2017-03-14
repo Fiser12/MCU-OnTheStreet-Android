@@ -55,7 +55,7 @@ public class SitiosManager extends SQLiteOpenHelper{
         sitio.title = "Guggenheim";
         sitio.description = "Museo más importante y grande de Bilbao, se encuentra al otro lado de la universidad de Deusto y es una de las principales zonas actuales de turismo obligatorio de la ciudad.";
         sitio.imageUrl = "http://www.esvivir.com/uploads/museo_guggenheim_bilbao_1500_23114227.jpg";
-        sitio.coordenadas = "43.268606°, -2.934286°";
+        sitio.coordenadas = "Etorbidea Abandoibarra, 2";
         sitio.instructionUrl = "https://www.guggenheim-bilbao.eus";
         ContentValues values = new ContentValues();
         values.put(COLUMN_TITLE, sitio.title);

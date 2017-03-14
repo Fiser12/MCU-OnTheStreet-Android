@@ -26,11 +26,15 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -46,6 +50,9 @@ import android.widget.TextView;
 import com.fiser.sites.R;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
@@ -63,6 +70,7 @@ public class SitioDetailActivity extends AppCompatActivity {
     private LocationListener locationListener = null;
     private boolean accesoDenegadoGPS = false;
     Location location = null;
+    private Bitmap bitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +89,7 @@ public class SitioDetailActivity extends AppCompatActivity {
         titulo = (EditText) findViewById(R.id.editTitulo);
         titulo.setText(sitio.title);
         imagen = (ImageView) findViewById(R.id.imageView);
-        Picasso.with(this).load(sitio.imageUrl).placeholder(R.mipmap.ic_launcher).into(imagen);
+        imagen.setImageBitmap(getImageFromInternalStorage("img"+sitio.id+".png"));
         boton = (Button) findViewById(R.id.buttonGuardar);
         locationListener = new MyLocationListener();
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -95,6 +103,8 @@ public class SitioDetailActivity extends AppCompatActivity {
                 sitio.title = titulo.getText().toString();
                 if(location!=null&&!accesoDenegadoGPS)
                     sitio.coordenadas = getAddress(location.getLatitude(),location.getLongitude());
+                if(changeImage)
+                    saveImageToInternalStorage(bitmap);
                 new SitiosManager(SitioDetailActivity.this).putSitio(sitio);
                 Intent returnIntent = new Intent();
                 returnIntent.putExtra("sitio", sitio);
@@ -102,7 +112,52 @@ public class SitioDetailActivity extends AppCompatActivity {
                 finish();
             }
         });
+        imagen.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                Intent chooseImageIntent = ImagePicker.getPickImageIntent(SitioDetailActivity.this);
+                startActivityForResult(chooseImageIntent, PICK_IMAGE_ID);
+            }
+        });
     }
+    private boolean changeImage = false;
+    private static final int PICK_IMAGE_ID = 234;
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch(requestCode) {
+            case PICK_IMAGE_ID:
+                bitmap = ImagePicker.getImageFromResult(this, resultCode, data);
+                imagen.setImageBitmap(bitmap);
+                changeImage = true;
+                break;
+            default:
+                super.onActivityResult(requestCode, resultCode, data);
+                break;
+        }
+    }
+    public String saveImageToInternalStorage(Bitmap image) {
+        try {
+            FileOutputStream fos = this.openFileOutput("img"+sitio.id+".png", Context.MODE_PRIVATE);
+            image.compress(Bitmap.CompressFormat.PNG, 100, fos);
+            fos.close();
+            return "img"+sitio.id+".png";
+        } catch (Exception e) {
+            Log.e("saveToInternalStorage()", e.getMessage());
+            return "";
+        }
+    }
+    public Bitmap getImageFromInternalStorage(String filename) {
+        Bitmap thumbnail = null;
+        try {
+            File filePath = this.getFileStreamPath(filename);
+            FileInputStream fi = new FileInputStream(filePath);
+            thumbnail = BitmapFactory.decodeStream(fi);
+        } catch (Exception ex) {
+
+        }
+        return thumbnail;
+    }
+
 
     private String getAddress(double lat, double lng) {
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
@@ -110,7 +165,7 @@ public class SitioDetailActivity extends AppCompatActivity {
             List<Address> addresses = geocoder.getFromLocation(lat, lng, 1);
             Address obj = addresses.get(0);
             return obj.getAddressLine(0);
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return "";

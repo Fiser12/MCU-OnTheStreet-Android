@@ -1,4 +1,5 @@
 <resources>
   <string name="app_name">OnTheStreet</string>
   <string name="thumbnail">thumbnail</string>
+  <string name="pick_image_intent_text">Recoger imagen</string>
 </resources>
