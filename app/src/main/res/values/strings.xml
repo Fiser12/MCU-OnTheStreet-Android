@@ -2,4 +2,12 @@
   <string name="app_name">OnTheStreet</string>
   <string name="thumbnail">thumbnail</string>
   <string name="pick_image_intent_text">Recoger imagen</string>
+  <string name="cercaniaMinima">cercaniaMinima</string>
+  <string name="lugaresWidget">lugaresWidget</string>
+  <string name="tituloPorDefecto">tituloPorDefecto</string>
+  <string name="notificacionesActivas">notificacionesActivas</string>
+  <integer name="cercaniaMinimaDefault">1</integer>
+  <integer name="lugaresWidgetDefault">4</integer>
+  <string name="tituloPorDefectoDefault">Nuevo sitio: [LocationStreet] [DateToday]"</string>
+  <bool name="notificacionesActivasDefault">false</bool>
 </resources>

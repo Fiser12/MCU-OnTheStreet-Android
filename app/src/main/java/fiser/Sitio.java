@@ -39,6 +39,8 @@ public class Sitio implements Serializable {
   public String imageUrl;
   public String instructionUrl;
   public String coordenadas;
+  public double latitud;
+  public double longitud;
   public ArrayList<String> contactos = new ArrayList<>();
 
   public static ArrayList<Sitio> getSitio(Context context){

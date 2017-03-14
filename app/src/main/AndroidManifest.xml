@@ -19,5 +19,8 @@
     </activity>
     <activity android:name="fiser.SitioDetailActivity">
     </activity>
+    <activity android:name="fiser.SitioSettingsActivity">
+    </activity>
+
   </application>
 </manifest>

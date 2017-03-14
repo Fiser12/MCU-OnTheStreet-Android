@@ -34,7 +34,6 @@ import android.widget.TextView;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import com.fiser.sites.R;
 import android.graphics.Typeface;
@@ -42,16 +41,6 @@ import android.graphics.Typeface;
 public class SitioAdapter extends BaseAdapter {
 
   public static final String TAG = SitioAdapter.class.getSimpleName();
-  public static final HashMap<String, Integer> LABEL_COLORS = new HashMap<String, Integer>()
-  {{
-    put("Low-Carb", R.color.colorLowCarb);
-    put("Low-Fat", R.color.colorLowFat);
-    put("Low-Sodium", R.color.colorLowSodium);
-    put("Medium-Carb", R.color.colorMediumCarb);
-    put("Vegetarian", R.color.colorVegetarian);
-    put("Balanced", R.color.colorBalanced);
-  }};
-
   private Context mContext;
   private LayoutInflater mInflater;
   private ArrayList<Sitio> mDataSource;

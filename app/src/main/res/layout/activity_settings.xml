@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="fiser.SitioSettingsActivity">
+        <TextView
+            android:id="@+id/textViewLugaresWidget"
+            android:layout_width="match_parent"
+            android:layout_height="24dp"
+            android:text="Máximo de lugares en el widget (1-8):"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="112dp"
+            tools:ignore="HardcodedText" />
+
+        <EditText
+            android:id="@+id/editTextLugaresWidget"
+            android:layout_width="match_parent"
+            android:layout_height="39dp"
+            android:ems="10"
+            android:text="4"
+            android:inputType="number"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="136dp"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:id="@+id/textViewCercaniaMinima"
+            android:layout_width="match_parent"
+            android:layout_height="24dp"
+            android:text="Cerca al menos en KM:"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="29dp"
+            tools:ignore="HardcodedText" />
+
+        <EditText
+            android:id="@+id/editTextCercaniaMinima"
+            android:layout_width="match_parent"
+            android:layout_height="42dp"
+            android:ems="10"
+            android:text="1"
+            android:inputType="number"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="53dp"
+            tools:ignore="HardcodedText" />
+
+        <CheckBox
+            android:id="@+id/checkBoxNotificaciones"
+            android:layout_width="365dp"
+            android:layout_height="47dp"
+            android:text="Notificaciones en segundo plano"
+            tools:layout_editor_absoluteX="10dp"
+            tools:layout_editor_absoluteY="303dp"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:id="@+id/textViewTextoTituloPorDefecto"
+            android:layout_width="match_parent"
+            android:layout_height="24dp"
+            android:text="Cerca al menos en KM:"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="29dp"
+            tools:ignore="HardcodedText" />
+
+        <EditText
+            android:id="@+id/editTextTextoTituloPorDefecto"
+            android:layout_width="match_parent"
+            android:layout_height="42dp"
+            android:ems="10"
+            android:text="Nuevo sitio en [LocationStreet]"
+            android:inputType="text"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="53dp"
+            tools:ignore="HardcodedText" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+                <Button
+                    android:id="@+id/buttonGuardarConfig"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginBottom="17dp"
+                    android:layout_marginEnd="21dp"
+                    android:text="Guardar" />
+        </RelativeLayout>
+</LinearLayout>

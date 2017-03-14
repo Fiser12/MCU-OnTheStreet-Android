@@ -1,43 +1,25 @@
-/*
- * Copyright (c) 2016 Razeware LLC
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
 package fiser;
 
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.icu.text.DateFormat;
+import android.icu.text.SimpleDateFormat;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -51,14 +33,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
-
 import com.fiser.sites.R;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -66,7 +45,7 @@ public class SitioDetailActivity extends AppCompatActivity {
     public static final String TAG = SitioDetailActivity.class.getSimpleName();
     private EditText description;
     private EditText titulo;
-    private TextView ubicacion;
+    private EditText ubicacion;
 
     private ImageView imagen;
     private Button botonGuardar;
@@ -87,18 +66,21 @@ public class SitioDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        locationListener = new MyLocationListener();
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            accesoDenegadoGPS = true;
+        }else {
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, locationListener);
+        }
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.activity_sitio_detail);
         sitio = (Sitio) this.getIntent().getExtras().getSerializable("sitio");
-        setTitle(sitio.title);
-        ubicacion = (TextView) findViewById(R.id.textUbicacion);
+        ubicacion = (EditText) findViewById(R.id.textUbicacion);
         ubicacion.setText(sitio.coordenadas);
         description = (EditText) findViewById(R.id.editDescripcion);
         description.setText(sitio.description);
-        titulo = (EditText) findViewById(R.id.editTitulo);
-        titulo.setText(sitio.title);
         imagen = (ImageView) findViewById(R.id.imageView);
         imagen.setImageBitmap(getImageFromInternalStorage("img"+sitio.id+".png"));
         botonGuardar = (Button) findViewById(R.id.buttonGuardar);
@@ -113,7 +95,10 @@ public class SitioDetailActivity extends AppCompatActivity {
                 itemsAdapter.notifyDataSetChanged();
             }
         });
-
+        procesarTituloPorDefecto();
+        setTitle(sitio.title);
+        titulo = (EditText) findViewById(R.id.editTitulo);
+        titulo.setText(sitio.title);
         fab = (FloatingActionButton) findViewById(R.id.add);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,18 +109,15 @@ public class SitioDetailActivity extends AppCompatActivity {
                 startActivityForResult(intent, REQUEST_CODE);
             }
         });
-        locationListener = new MyLocationListener();
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            accesoDenegadoGPS = true;
-        }else {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, locationListener);
-        }
         botonGuardar.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 sitio.description = description.getText().toString();
                 sitio.title = titulo.getText().toString();
-                if(location!=null&&!accesoDenegadoGPS)
-                    sitio.coordenadas = getAddress(location.getLatitude(),location.getLongitude());
+                if(location!=null&&!accesoDenegadoGPS) {
+                    sitio.coordenadas = getAddress(location.getLatitude(), location.getLongitude());
+                    sitio.latitud = location.getLatitude();
+                    sitio.longitud = location.getLongitude();
+                }
                 if(changeImage)
                     saveImageToInternalStorage(bitmap);
                 new SitiosManager(SitioDetailActivity.this).putSitio(sitio);
@@ -184,6 +166,7 @@ public class SitioDetailActivity extends AppCompatActivity {
                     int nameColumnIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
                     String name = cursor.getString(nameColumnIndex);
                     sitio.contactos.add(name+" "+number);
+
                     itemsAdapter.notifyDataSetChanged();
                 }
             default:
@@ -214,7 +197,16 @@ public class SitioDetailActivity extends AppCompatActivity {
         return thumbnail;
     }
 
-
+    private void procesarTituloPorDefecto(){
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String titulo = sharedPref.getString(getString(R.string.tituloPorDefecto), getResources().getString(R.string.tituloPorDefectoDefault));
+        String[] atributos = {"[DateToday]"};
+        for(String temp: atributos){
+            if(temp.equals(atributos[0]))
+                titulo = titulo.replaceAll(temp, DateFormat.getDateInstance(DateFormat.MEDIUM).format(new Date()));
+        }
+        sitio.title = titulo;
+    }
     private String getAddress(double lat, double lng) {
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
         try {
@@ -238,12 +230,13 @@ public class SitioDetailActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
+    private String direccion = "";
     private class MyLocationListener implements LocationListener {
         @Override
         public void onLocationChanged(Location loc) {
             location = loc;
-            ubicacion.setText(getAddress(loc.getLatitude(), loc.getLongitude()));
+            direccion = getAddress(loc.getLatitude(), loc.getLongitude());
+            ubicacion.setText(direccion);
         }
         @Override
         public void onProviderDisabled(String provider) {

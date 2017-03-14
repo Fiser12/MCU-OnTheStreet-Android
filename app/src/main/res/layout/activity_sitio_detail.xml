@@ -34,7 +34,6 @@
                 android:layout_marginLeft="4dp"
                 android:layout_marginStart="4dp"
                 android:layout_marginTop="2dp"
-                android:contentDescription="@string/thumbnail"
                 android:scaleType="centerInside"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -122,13 +121,14 @@
                 app:layout_constraintRight_toLeftOf="@+id/buttonGuardar"
                 app:layout_constraintTop_toBottomOf="@+id/relativeLayout" />
 
-            <TextView
+            <EditText
                 android:id="@+id/textUbicacion"
                 android:layout_width="165dp"
                 android:layout_height="45dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
+                android:textSize="10sp"
                 android:text="TextView"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/relativeLayout" />

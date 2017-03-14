@@ -22,6 +22,8 @@
 package fiser;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -98,6 +100,9 @@ public class MainActivity extends AppCompatActivity {
                 detailIntent.putExtra("sitio", sitio);
                 startActivityForResult(detailIntent, PICK_CONTACT_REQUEST);
                 return true;
+            case R.id.settings:
+                detailIntent = new Intent(this, SitioSettingsActivity.class);
+                startActivity(detailIntent);
             default:
                 return super.onOptionsItemSelected(item);
         }
