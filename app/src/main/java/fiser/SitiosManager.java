@@ -76,6 +76,10 @@ public class SitiosManager extends SQLiteOpenHelper{
         values.put(COLUMN_CONTACTSID, sitio.contactos.toString());
         db.insertWithOnConflict(TABLE_SITIOS, null, values, SQLiteDatabase.CONFLICT_REPLACE);
     }
+    public boolean deleteSitio(Sitio sitio){
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(TABLE_SITIOS, COLUMN_ID+"="+sitio.id, null) > 0;
+    }
     public ArrayList<Sitio> getSitios(){
         ArrayList<Sitio> as = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();

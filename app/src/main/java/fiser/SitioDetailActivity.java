@@ -33,8 +33,6 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -48,12 +46,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.fiser.sites.R;
-import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
@@ -64,7 +60,9 @@ public class SitioDetailActivity extends AppCompatActivity {
     private TextView ubicacion;
 
     private ImageView imagen;
-    private Button boton;
+    private Button botonGuardar;
+    private Button botonBorrar;
+
     private Sitio sitio;
     private LocationManager locationManager = null;
     private LocationListener locationListener = null;
@@ -90,14 +88,16 @@ public class SitioDetailActivity extends AppCompatActivity {
         titulo.setText(sitio.title);
         imagen = (ImageView) findViewById(R.id.imageView);
         imagen.setImageBitmap(getImageFromInternalStorage("img"+sitio.id+".png"));
-        boton = (Button) findViewById(R.id.buttonGuardar);
+        botonGuardar = (Button) findViewById(R.id.buttonGuardar);
+        botonBorrar = (Button) findViewById(R.id.buttonBorrar);
+
         locationListener = new MyLocationListener();
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             accesoDenegadoGPS = true;
         }else {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, locationListener);
         }
-        boton.setOnClickListener(new View.OnClickListener() {
+        botonGuardar.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 sitio.description = description.getText().toString();
                 sitio.title = titulo.getText().toString();
@@ -108,6 +108,14 @@ public class SitioDetailActivity extends AppCompatActivity {
                 new SitiosManager(SitioDetailActivity.this).putSitio(sitio);
                 Intent returnIntent = new Intent();
                 returnIntent.putExtra("sitio", sitio);
+                setResult(Activity.RESULT_OK, returnIntent);
+                finish();
+            }
+        });
+        botonBorrar.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                new SitiosManager(SitioDetailActivity.this).deleteSitio(sitio);
+                Intent returnIntent = new Intent();
                 setResult(Activity.RESULT_OK, returnIntent);
                 finish();
             }
