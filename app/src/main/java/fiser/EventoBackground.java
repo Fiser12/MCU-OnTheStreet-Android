@@ -49,7 +49,7 @@ public class EventoBackground extends Service {
     public void onCreate() {
         super.onCreate();
         mTimer = new Timer();
-        mTimer.schedule(timerTask, 10000, 10000);
+        mTimer.schedule(timerTask, 1000, 60*1000);
     }
 
     @Override

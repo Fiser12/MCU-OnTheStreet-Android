@@ -10,7 +10,6 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.icu.text.DateFormat;
-import android.icu.text.SimpleDateFormat;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -185,7 +184,7 @@ public class SitioDetailActivity extends AppCompatActivity {
         }
     }
     public Bitmap getImageFromInternalStorage(String filename) {
-        Bitmap thumbnail = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+        Bitmap thumbnail = BitmapFactory.decodeResource(getResources(), R.drawable.default_image);
         try {
             File filePath = this.getFileStreamPath(filename);
             FileInputStream fi = new FileInputStream(filePath);

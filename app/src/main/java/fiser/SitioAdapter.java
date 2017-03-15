@@ -84,7 +84,6 @@ public class SitioAdapter extends BaseAdapter {
     TextView titleTextView = holder.titleTextView;
     ImageView thumbnailImageView = holder.thumbnailImageView;
     TextView ubicacionTextView = holder.ubicacionTextView;
-
     Sitio sitio = (Sitio) getItem(position);
     titleTextView.setText(sitio.title);
     ubicacionTextView.setText(sitio.coordenadas);
@@ -95,7 +94,7 @@ public class SitioAdapter extends BaseAdapter {
     return convertView;
   }
   public Bitmap getImageFromInternalStorage(String filename) {
-    Bitmap thumbnail = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.ic_launcher);
+    Bitmap thumbnail = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.default_image);
     try {
       File filePath = mContext.getFileStreamPath(filename);
       FileInputStream fi = new FileInputStream(filePath);
