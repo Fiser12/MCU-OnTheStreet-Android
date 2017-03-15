@@ -10,4 +10,6 @@
   <integer name="lugaresWidgetDefault">4</integer>
   <string name="tituloPorDefectoDefault">Nuevo sitio: [DateToday]"</string>
   <bool name="notificacionesActivasDefault">false</bool>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 </resources>

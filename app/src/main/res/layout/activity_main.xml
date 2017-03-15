@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="fiser.MainActivity">
+    tools:context="fiser.Activities.MainActivity">
   <ListView
       android:id="@+id/sitio_list_view"
       android:layout_height="match_parent"

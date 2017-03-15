@@ -1,16 +1,17 @@
-package fiser;
+package fiser.model;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.regex.Pattern;
+
+import fiser.BO.Sitio;
 
 public class SitiosManager extends SQLiteOpenHelper{
 

@@ -1,4 +1,4 @@
-package fiser;
+package fiser.Activities;
 
 import android.app.Activity;
 import android.content.Intent;

@@ -1,36 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="com.fiser.sites"
-          xmlns:android="http://schemas.android.com/apk/res/android">
-  <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION">
-  </uses-permission>
-  <uses-permission android:name="android.permission.INTERNET"/>
-  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-  <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-  <application
-      android:allowBackup="true"
-      android:icon="@mipmap/ic_launcher"
-      android:label="@string/app_name"
-      android:supportsRtl="true"
-      android:theme="@style/AppTheme">
-    <activity android:name="fiser.MainActivity">
-      <intent-filter>
-        <action android:name="android.intent.action.MAIN"/>
-        <category android:name="android.intent.category.LAUNCHER"/>
-      </intent-filter>
-    </activity>
-    <activity android:name="fiser.SitioDetailActivity">
-    </activity>
-    <activity android:name="fiser.SitioSettingsActivity">
-    </activity>
-    <service
-        android:name="fiser.EventoBackground"
-        android:label="SegundoPlano">
-    </service>
-    <receiver android:name="fiser.BootReceiver">
-      <intent-filter>
-        <action android:name="fiser"/>
-        <action android:name="android.intent.action.BOOT_COMPLETED"/>
-      </intent-filter>
-    </receiver>
-  </application>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.fiser.sites">
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name="fiser.Activities.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name="fiser.Activities.SitioDetailActivity"></activity>
+        <activity android:name="fiser.Activities.SitioSettingsActivity"></activity>
+        <service android:name="fiser.widget.WidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+        <service
+            android:name="fiser.background.EventoBackground"
+            android:label="SegundoPlano"></service>
+
+        <receiver android:name="fiser.background.BootReceiver">
+            <intent-filter>
+                <action android:name="fiser" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name="fiser.widget.WidgetSitios">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_sitios_info" />
+        </receiver>
+    </application>
+
 </manifest>

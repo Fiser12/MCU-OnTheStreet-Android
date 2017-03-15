@@ -1,4 +1,4 @@
-package fiser;
+package fiser.Activities;
 
 import android.Manifest;
 import android.app.Activity;
@@ -39,6 +39,10 @@ import java.io.FileOutputStream;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+import fiser.BO.Sitio;
+import fiser.ImagePicker;
+import fiser.model.SitiosManager;
 
 public class SitioDetailActivity extends AppCompatActivity {
     public static final String TAG = SitioDetailActivity.class.getSimpleName();

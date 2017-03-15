@@ -19,16 +19,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package fiser;
+package fiser.BO;
 
 import android.content.Context;
 
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+
+import fiser.model.SitiosManager;
 
 public class Sitio implements Serializable {
 

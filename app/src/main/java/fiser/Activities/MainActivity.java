@@ -19,13 +19,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package fiser;
+package fiser.Activities;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
@@ -50,6 +47,9 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.content.Intent;
 
 import com.fiser.sites.R;
+
+import fiser.BO.Sitio;
+import fiser.background.EventoBackground;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -104,21 +104,18 @@ public class MainActivity extends AppCompatActivity {
     private void listaRecargar(boolean cercanos) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         sitioList.clear();
-
         if (!cercanos) {
             for (Sitio sitio : Sitio.getSitio(this))
                 sitioList.add(sitio);
         } else {
             LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
             Criteria criteria = new Criteria();
-
             String provider = locationManager.getBestProvider(criteria, true);
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 for (Sitio sitio : Sitio.getSitio(this))
                     sitioList.add(sitio);
             } else {
                 Location location = locationManager.getLastKnownLocation(provider);
-
                 for (Sitio sitio : Sitio.getSitio(this)) {
                     Location loc = new Location("temp");
                     loc.setLatitude(sitio.latitud);

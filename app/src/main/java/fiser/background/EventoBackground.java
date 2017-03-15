@@ -1,4 +1,4 @@
-package fiser;
+package fiser.background;
 
 import android.Manifest;
 import android.app.Notification;
@@ -13,7 +13,6 @@ import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
-import android.net.Uri;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
@@ -24,6 +23,10 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import fiser.BO.Sitio;
+import fiser.Activities.SitioDetailActivity;
+import fiser.model.SitiosManager;
 
 public class EventoBackground extends Service {
     private Sitio sitioMasCercano;

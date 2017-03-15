@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package fiser;
+package fiser.Activities;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -37,6 +37,8 @@ import java.util.ArrayList;
 
 import com.fiser.sites.R;
 import android.graphics.Typeface;
+
+import fiser.BO.Sitio;
 
 public class SitioAdapter extends BaseAdapter {
 
