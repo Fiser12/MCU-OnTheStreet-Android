@@ -1,7 +1,6 @@
 package fiser;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -60,7 +59,6 @@ public class SitioSettingsActivity extends AppCompatActivity {
                     editor.commit();
                     finish();
                 }else{
-
                 }
             }
         });

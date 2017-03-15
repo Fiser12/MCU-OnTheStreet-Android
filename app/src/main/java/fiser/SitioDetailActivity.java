@@ -158,8 +158,7 @@ public class SitioDetailActivity extends AppCompatActivity {
                 {
                     Uri uri = data.getData();
                     String[] projection = { ContactsContract.CommonDataKinds.Phone.NUMBER, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME };
-                    Cursor cursor = getContentResolver().query(uri, projection,
-                            null, null, null);
+                    Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
                     cursor.moveToFirst();
                     int numberColumnIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
                     String number = cursor.getString(numberColumnIndex);
@@ -198,14 +197,16 @@ public class SitioDetailActivity extends AppCompatActivity {
     }
 
     private void procesarTituloPorDefecto(){
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        String titulo = sharedPref.getString(getString(R.string.tituloPorDefecto), getResources().getString(R.string.tituloPorDefectoDefault));
-        String[] atributos = {"[DateToday]"};
-        for(String temp: atributos){
-            if(temp.equals(atributos[0]))
-                titulo = titulo.replaceAll(temp, DateFormat.getDateInstance(DateFormat.MEDIUM).format(new Date()));
+        if(sitio.title==null) {
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            String titulo = sharedPref.getString(getString(R.string.tituloPorDefecto), getResources().getString(R.string.tituloPorDefectoDefault));
+            String[] atributos = {"[DateToday]"};
+            for (String temp : atributos) {
+                if (temp.equals(atributos[0]))
+                    titulo = titulo.replace(temp, DateFormat.getDateInstance(DateFormat.MEDIUM).format(new Date()));
+            }
+            sitio.title = titulo;
         }
-        sitio.title = titulo;
     }
     private String getAddress(double lat, double lng) {
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());

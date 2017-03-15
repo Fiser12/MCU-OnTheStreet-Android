@@ -8,6 +8,6 @@
   <string name="notificacionesActivas">notificacionesActivas</string>
   <integer name="cercaniaMinimaDefault">1</integer>
   <integer name="lugaresWidgetDefault">4</integer>
-  <string name="tituloPorDefectoDefault">Nuevo sitio: [LocationStreet] [DateToday]"</string>
+  <string name="tituloPorDefectoDefault">Nuevo sitio: [DateToday]"</string>
   <bool name="notificacionesActivasDefault">false</bool>
 </resources>

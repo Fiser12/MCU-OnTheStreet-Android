@@ -4,5 +4,9 @@
         android:title="Crear" />
     <item android:id="@+id/settings"
         android:title="Configuracion" />
+    <item android:id="@+id/cerca"
+        android:title="Sitios Cercanos"
+        android:checkable="true"
+        android:checked="false"/>
 
 </menu>

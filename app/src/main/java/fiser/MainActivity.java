@@ -21,11 +21,19 @@
  */
 package fiser;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -75,7 +83,6 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == PICK_CONTACT_REQUEST) {
             if (resultCode == Activity.RESULT_OK) {
                 sitioList.clear();
-                adapter.notifyDataSetChanged();
                 for (Sitio sitio : Sitio.getSitio(this))
                     sitioList.add(sitio);
                 adapter.notifyDataSetChanged();
@@ -88,6 +95,38 @@ public class MainActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
         return true;
+    }
+
+    private void listaRecargar(boolean cercanos) {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        sitioList.clear();
+
+        if (!cercanos) {
+            for (Sitio sitio : Sitio.getSitio(this))
+                sitioList.add(sitio);
+        } else {
+            LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+            Criteria criteria = new Criteria();
+
+            String provider = locationManager.getBestProvider(criteria, true);
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                for (Sitio sitio : Sitio.getSitio(this))
+                    sitioList.add(sitio);
+            } else {
+                Location location = locationManager.getLastKnownLocation(provider);
+
+                for (Sitio sitio : Sitio.getSitio(this)) {
+                    Location loc = new Location("temp");
+                    loc.setLatitude(sitio.latitud);
+                    loc.setLongitude(sitio.longitud);
+                    float distance = location.distanceTo(loc);
+                    int cercaniaMinimaInt = sharedPref.getInt(getString(R.string.cercaniaMinima), getResources().getInteger(R.integer.cercaniaMinimaDefault));
+                    if (cercaniaMinimaInt * 1000 > distance)
+                        sitioList.add(sitio);
+                }
+            }
+        }
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -103,6 +142,11 @@ public class MainActivity extends AppCompatActivity {
             case R.id.settings:
                 detailIntent = new Intent(this, SitioSettingsActivity.class);
                 startActivity(detailIntent);
+                return true;
+            case R.id.cerca:
+                item.setChecked(!item.isChecked());
+                listaRecargar(item.isChecked());
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
