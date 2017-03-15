@@ -95,7 +95,7 @@ public class SitioAdapter extends BaseAdapter {
     return convertView;
   }
   public Bitmap getImageFromInternalStorage(String filename) {
-    Bitmap thumbnail = null;
+    Bitmap thumbnail = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.ic_launcher);
     try {
       File filePath = mContext.getFileStreamPath(filename);
       FileInputStream fi = new FileInputStream(filePath);

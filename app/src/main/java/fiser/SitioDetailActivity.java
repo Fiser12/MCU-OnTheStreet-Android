@@ -185,13 +185,13 @@ public class SitioDetailActivity extends AppCompatActivity {
         }
     }
     public Bitmap getImageFromInternalStorage(String filename) {
-        Bitmap thumbnail = null;
+        Bitmap thumbnail = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
         try {
             File filePath = this.getFileStreamPath(filename);
             FileInputStream fi = new FileInputStream(filePath);
             thumbnail = BitmapFactory.decodeStream(fi);
         } catch (Exception ex) {
-
+            ex.printStackTrace();
         }
         return thumbnail;
     }
