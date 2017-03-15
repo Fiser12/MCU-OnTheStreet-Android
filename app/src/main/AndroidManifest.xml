@@ -5,6 +5,7 @@
   </uses-permission>
   <uses-permission android:name="android.permission.INTERNET"/>
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+  <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
   <application
       android:allowBackup="true"
       android:icon="@mipmap/ic_launcher"
@@ -21,6 +22,15 @@
     </activity>
     <activity android:name="fiser.SitioSettingsActivity">
     </activity>
-
+    <service
+        android:name="fiser.EventoBackground"
+        android:label="SegundoPlano">
+    </service>
+    <receiver android:name="fiser.BootReceiver">
+      <intent-filter>
+        <action android:name="fiser"/>
+        <action android:name="android.intent.action.BOOT_COMPLETED"/>
+      </intent-filter>
+    </receiver>
   </application>
 </manifest>

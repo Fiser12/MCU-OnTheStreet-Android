@@ -191,7 +191,6 @@ public class SitioDetailActivity extends AppCompatActivity {
             FileInputStream fi = new FileInputStream(filePath);
             thumbnail = BitmapFactory.decodeStream(fi);
         } catch (Exception ex) {
-            ex.printStackTrace();
         }
         return thumbnail;
     }
