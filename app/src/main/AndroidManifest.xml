@@ -28,7 +28,6 @@
         <service
             android:name="fiser.background.EventoBackground"
             android:label="SegundoPlano"></service>
-
         <receiver android:name="fiser.background.BootReceiver">
             <intent-filter>
                 <action android:name="fiser" />

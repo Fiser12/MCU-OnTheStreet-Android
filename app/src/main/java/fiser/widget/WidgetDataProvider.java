@@ -14,6 +14,7 @@ import android.graphics.BitmapFactory;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.widget.RemoteViews;
@@ -65,13 +66,19 @@ public class WidgetDataProvider implements RemoteViewsService.RemoteViewsFactory
 
     @Override
     public RemoteViews getViewAt(int position) {
-        final RemoteViews remoteView = new RemoteViews(mContext.getPackageName(), R.layout.list_row);
+        RemoteViews remoteView = new RemoteViews(mContext.getPackageName(), R.layout.list_row);
         Sitio listItem = mCollection.get(position);
         remoteView.setTextViewText(R.id.heading, listItem.title);
         remoteView.setTextViewText(R.id.content, listItem.coordenadas);
         Bitmap bitmap = getImageFromInternalStorage("img"+listItem.id+".png");
         if (bitmap != null)
             remoteView.setImageViewBitmap(R.id.imageView, bitmap);
+        Bundle extras = new Bundle();
+        extras.putInt("KEY", listItem.id);
+        Intent fillInIntent = new Intent();
+        fillInIntent.putExtras(extras);
+        remoteView.setOnClickFillInIntent(R.id.imageView, fillInIntent);
+
         return remoteView;
     }
     public Bitmap getImageFromInternalStorage(String filename) {
