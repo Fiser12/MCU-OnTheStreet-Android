@@ -75,14 +75,10 @@ public class WidgetSitios extends AppWidgetProvider {
     @Override
     public void onReceive(Context context, Intent intent)
     {
-        AppWidgetManager mgr = AppWidgetManager.getInstance(context);
         if (intent.getAction().equals(YOUR_AWESOME_ACTION)) {
-            int appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
-                    AppWidgetManager.INVALID_APPWIDGET_ID);
             int id = intent.getIntExtra("KEY", 0);
             for (Sitio sitio : Sitio.getSitio(context)) {
                 if(id==sitio.id){
-                    Log.e("ERR", ""+sitio.id);
                     Intent i = new Intent();
                     i.putExtra("sitio", sitio);
                     i.setClass(context, SitioDetailActivity.class);
