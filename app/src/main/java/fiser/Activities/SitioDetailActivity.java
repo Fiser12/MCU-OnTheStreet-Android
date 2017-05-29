@@ -213,9 +213,7 @@ public class SitioDetailActivity extends AppCompatActivity {
     private String getAddress(double lat, double lng) {
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
         try {
-            List<Address> addresses = geocoder.getFromLocation(lat, lng, 1);
-            Address obj = addresses.get(0);
-            return obj.getAddressLine(0);
+            return lat + " " + lng;
         } catch (Exception e) {
             e.printStackTrace();
         }
